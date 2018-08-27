@@ -28,9 +28,24 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties(prefix = "application", ignoreUnknownFields = false)
 public class ApplicationProperties {
+
+    private JhipsterCmd jhipsterCmd = new JhipsterCmd();
+
     private final Github github = new Github();
 
+    private final Gitlab gitlab = new Gitlab();
+
+    private final Mail mail = new Mail();
+
     private String tmpFolder = "/tmp";
+
+    public JhipsterCmd getJhipsterCmd() {
+        return jhipsterCmd;
+    }
+
+    public void setJhipsterCmd(JhipsterCmd jhipsterCmd) {
+        this.jhipsterCmd = jhipsterCmd;
+    }
 
     public String getTmpFolder() {
         return tmpFolder;
@@ -44,9 +59,39 @@ public class ApplicationProperties {
         return github;
     }
 
+    public Gitlab getGitlab() {
+        return gitlab;
+    }
+
+    public Mail getMail() {
+        return mail;
+    }
+
+    public static class JhipsterCmd {
+        private String cmd = "jhipster";
+        private Integer timeout = 120;
+
+        public String getCmd() {
+            return cmd;
+        }
+
+        public void setCmd(String cmd) {
+            this.cmd = cmd;
+        }
+
+        public Integer getTimeout() {
+            return timeout;
+        }
+
+        public void setTimeout(Integer timeout) {
+            this.timeout = timeout;
+        }
+    }
+
     public static class Github {
         private String clientId;
         private String clientSecret;
+        private String host = "https://github.com";
         private String jhipsterBotOauthToken = "";
 
         public String getClientId() {
@@ -65,6 +110,14 @@ public class ApplicationProperties {
             this.clientSecret = clientSecret;
         }
 
+        public String getHost() {
+            return host;
+        }
+
+        public void setHost(String host) {
+            this.host = host;
+        }
+
         public String getJhipsterBotOauthToken() {
             return jhipsterBotOauthToken;
         }
@@ -73,4 +126,57 @@ public class ApplicationProperties {
             this.jhipsterBotOauthToken = jhipsterBotOauthToken;
         }
     }
+
+    public static class Gitlab {
+        private String clientId;
+        private String clientSecret;
+        private String host = "https://gitlab.com";
+        private String redirectUri;
+
+        public String getClientId() {
+            return clientId;
+        }
+
+        public void setClientId(String clientId) {
+            this.clientId = clientId;
+        }
+
+        public String getClientSecret() {
+            return clientSecret;
+        }
+
+        public void setClientSecret(String clientSecret) {
+            this.clientSecret = clientSecret;
+        }
+
+        public String getHost() {
+            return host;
+        }
+
+        public void setHost(String host) {
+            this.host = host;
+        }
+
+        public String getRedirectUri() {
+            return redirectUri;
+        }
+
+        public void setRedirectUri(String redirectUri) {
+            this.redirectUri = redirectUri;
+        }
+    }
+
+    public static class Mail {
+
+        public boolean enable;
+
+        public void setEnable(boolean enable) {
+            this.enable = enable;
+        }
+
+        public boolean isEnable() {
+            return enable;
+        }
+    }
+
 }

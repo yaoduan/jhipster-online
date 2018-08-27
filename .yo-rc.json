@@ -3,7 +3,7 @@
     "promptValues": {
       "packageName": "io.github.jhipster.online"
     },
-    "jhipsterVersion": "5.0.0-beta.1",
+    "jhipsterVersion": "5.0.2",
     "baseName": "jhonline",
     "packageName": "io.github.jhipster.online",
     "packageFolder": "io/github/jhipster/online",
@@ -13,7 +13,7 @@
     "clusteredHttpSession": false,
     "websocket": false,
     "databaseType": "sql",
-    "devDatabaseType": "h2Disk",
+    "devDatabaseType": "mysql",
     "prodDatabaseType": "mysql",
     "searchEngine": false,
     "messageBroker": false,

@@ -18,44 +18,50 @@
  */
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { NgxEchartsModule } from 'ngx-echarts';
 
-import { GithubComponent } from './github/github.component';
+import { GitComponent } from './git/git.component';
 import { WelcomeComponent } from './welcome/welcome.component';
-import { GeneratorService } from './generator/generator.service';
-import { GithubService } from './github/github.service';
-import { CallbackComponent } from './github/callback/callback.component';
-import { GithubCallbackService } from './github/callback/callback.service';
+import { CallbackComponent } from './git/callback/callback.component';
 import { GeneratorOutputDialogComponent } from './generator/generator.output.component';
 import { JdlMetadataComponent } from './jdl-metadata/jdl-metadata.component';
 import { ApplyJdlStudioComponent, DeleteJdlStudioComponent } from './jdl-metadata/jdl-studio.component';
-import { JdlMetadataService } from './jdl-metadata/jdl-metadata.service';
 import { JdlOutputDialogComponent } from './jdl-metadata/jdl.output.component';
-import { JdlService } from './jdl-metadata/jdl.service';
 import { CiCdComponent } from './ci-cd/ci-cd.component';
 import { CiCdOutputDialogComponent } from './ci-cd/ci-cd.output.component';
-import { CiCdService } from './ci-cd/ci-cd.service';
+import { RemoveGeneratorDialogComponent } from './your-generators/remove-generator-dialog.component';
 import { JhonlineSharedModule } from 'app/shared';
 import { HOME_ROUTE, HomeComponent } from './';
 import { GeneratorComponent } from 'app/home/generator/generator.component';
+import { YourGeneratorsComponent } from 'app/home/your-generators/your-generators.component';
+import { DataDeletionDialogComponent } from 'app/home/your-generators/data-deletion-dialog.component';
 
 @NgModule({
-    imports: [JhonlineSharedModule, RouterModule.forRoot([HOME_ROUTE], { useHash: true })],
+    imports: [JhonlineSharedModule, NgxEchartsModule, RouterModule.forRoot([HOME_ROUTE], { useHash: true })],
     declarations: [
         HomeComponent,
         GeneratorComponent,
         GeneratorOutputDialogComponent,
         WelcomeComponent,
-        GithubComponent,
+        GitComponent,
         CallbackComponent,
         JdlMetadataComponent,
         DeleteJdlStudioComponent,
         ApplyJdlStudioComponent,
         JdlOutputDialogComponent,
         CiCdComponent,
-        CiCdOutputDialogComponent
+        YourGeneratorsComponent,
+        CiCdOutputDialogComponent,
+        RemoveGeneratorDialogComponent,
+        DataDeletionDialogComponent
     ],
-    entryComponents: [GeneratorOutputDialogComponent, JdlOutputDialogComponent, CiCdOutputDialogComponent],
-    providers: [GeneratorService, GithubService, GithubCallbackService, JdlMetadataService, JdlService, CiCdService],
+    entryComponents: [
+        GeneratorOutputDialogComponent,
+        JdlOutputDialogComponent,
+        CiCdOutputDialogComponent,
+        RemoveGeneratorDialogComponent,
+        DataDeletionDialogComponent
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class JhonlineHomeModule {}

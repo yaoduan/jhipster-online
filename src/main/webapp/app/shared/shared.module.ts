@@ -17,17 +17,33 @@
  * limitations under the License.
  */
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 
 import { NgbDateMomentAdapter } from './util/datepicker-adapter';
-import { JhonlineSharedLibsModule, JhonlineSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective } from './';
+import { GoogleAnalyticsEventsService } from './ga/google-analytics-events.service';
+
+import {
+    JhonlineSharedLibsModule,
+    JhiGitProviderComponent,
+    JhiGitProviderAlertComponent,
+    JhonlineSharedCommonModule,
+    JhiLoginModalComponent,
+    HasAnyAuthorityDirective
+} from 'app/shared';
 
 @NgModule({
-    imports: [JhonlineSharedLibsModule, JhonlineSharedCommonModule],
-    declarations: [JhiLoginModalComponent, HasAnyAuthorityDirective],
-    providers: [{ provide: NgbDateAdapter, useClass: NgbDateMomentAdapter }],
+    imports: [JhonlineSharedLibsModule, JhonlineSharedCommonModule, RouterModule],
+    declarations: [JhiLoginModalComponent, JhiGitProviderComponent, JhiGitProviderAlertComponent, HasAnyAuthorityDirective],
+    providers: [{ provide: NgbDateAdapter, useClass: NgbDateMomentAdapter }, GoogleAnalyticsEventsService],
     entryComponents: [JhiLoginModalComponent],
-    exports: [JhonlineSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective],
+    exports: [
+        JhonlineSharedCommonModule,
+        JhiLoginModalComponent,
+        JhiGitProviderComponent,
+        JhiGitProviderAlertComponent,
+        HasAnyAuthorityDirective
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class JhonlineSharedModule {}

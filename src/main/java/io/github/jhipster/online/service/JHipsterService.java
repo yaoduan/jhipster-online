@@ -16,14 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.github.jhipster.online.service;
 
 import java.io.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import io.github.jhipster.online.config.ApplicationProperties;
 
 @Service
 public class JHipsterService {
@@ -32,14 +36,20 @@ public class JHipsterService {
 
     private final LogsService logsService;
 
-    private String jhipsterCommand = "";
+    private final Executor taskExecutor;
 
-    public JHipsterService(LogsService logsService) {
+    private final String jhipsterCommand;
+
+    private final Integer timeout;
+
+    public JHipsterService(LogsService logsService, ApplicationProperties applicationProperties, Executor taskExecutor) {
         this.logsService = logsService;
-        if (SystemUtils.IS_OS_LINUX) {
-            jhipsterCommand = "timeout 120 ";
-        }
-        jhipsterCommand += System.getProperty("user.home") + "/.yarn/bin/jhipster";
+        this.taskExecutor = taskExecutor;
+
+        jhipsterCommand = applicationProperties.getJhipsterCmd().getCmd();
+        timeout = applicationProperties.getJhipsterCmd().getTimeout();
+
+        log.info("JHipster service will be using \"{}\" to run generator-jhipster.", jhipsterCommand);
     }
 
     public void installYarnDependencies(String generationId, File workingDir) throws IOException {
@@ -49,7 +59,7 @@ public class JHipsterService {
 
     public void generateApplication(String generationId, File workingDir) throws IOException {
         this.logsService.addLog(generationId, "Running JHipster");
-        this.runProcess(generationId, workingDir, jhipsterCommand + " --no-insight --skip-checks " +
+        this.runProcess(generationId, workingDir, jhipsterCommand + " --force-insight --skip-checks " +
             "--skip-install --skip-cache --skip-git");
     }
 
@@ -57,7 +67,7 @@ public class JHipsterService {
         this.logsService.addLog(generationId, "Running `jhipster import-jdl");
         this.runProcess(generationId, workingDir, jhipsterCommand + " import-jdl " +
             jdlFileName + ".jh " +
-            "--no-insight --skip-checks --skip-install --force ");
+            "--force-insight --skip-checks --skip-install --force ");
     }
 
     public void addCiCdTravis(String generationId, File workingDir, String ciCdTool) throws Exception {
@@ -67,14 +77,27 @@ public class JHipsterService {
         }
         this.logsService.addLog(generationId, "Running `jhipster ci-cd`");
         this.runProcess(generationId, workingDir, jhipsterCommand + " ci-cd " +
-            "--autoconfigure-" + ciCdTool + " --no-insight --skip-checks --skip-install --force ");
+            "--autoconfigure-" + ciCdTool + " --force-insight --skip-checks --skip-install --force ");
     }
 
     private void runProcess(String generationId, File workingDir, String command) throws IOException {
+        log.info("Running command: \"{}\" in directory:  \"{}\"", command, workingDir);
         try {
             String line;
             Process p = Runtime.getRuntime().exec
                 (command, null, workingDir);
+
+            taskExecutor.execute(() -> {
+                try {
+                    p.waitFor(timeout, TimeUnit.SECONDS);
+                    if (p.isAlive()) {
+                        p.destroyForcibly();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+
             BufferedReader input =
                 new BufferedReader
                     (new InputStreamReader(p.getInputStream()));

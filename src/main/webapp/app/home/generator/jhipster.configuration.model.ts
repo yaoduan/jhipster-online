@@ -18,33 +18,33 @@
  */
 
 export class JHipsterConfigurationModel {
-
     constructor(
-        public applicationType: String,
-        public gitHubOrganization: String,
-        public baseName: String,
-        public packageName: String,
+        public applicationType: string,
+        public gitCompany: string,
+        public baseName: string,
+        public packageName: string,
+        public packageFolder: string,
         public serverPort: Number,
         public serviceDiscoveryType: any,
-        public authenticationType: String,
-        public uaaBaseName: String,
-        public cacheProvider: String,
-        public enableHibernateCache: Boolean,
+        public authenticationType: string,
+        public uaaBaseName: string,
+        public cacheProvider: string,
+        public enableHibernateCache: boolean,
         public websocket: any,
-        public databaseType: String,
-        public devDatabaseType: String,
-        public prodDatabaseType: String,
+        public databaseType: string,
+        public devDatabaseType: string,
+        public prodDatabaseType: string,
         public searchEngine: any,
         public enableSwaggerCodegen: any,
         public messageBroker: any,
-        public buildTool: String,
-        public enableSocialSignIn: Boolean,
+        public buildTool: string,
         public useSass: Boolean,
-        public clientPackageManager: String,
-        public testFrameworks: String[],
+        public clientPackageManager: string,
+        public testFrameworks: string[],
         public enableTranslation: Boolean,
-        public nativeLanguage: String,
-        public languages: String[],
-        public clientFramework: String
-    ) { }
+        public nativeLanguage: string,
+        public languages: string[],
+        public clientFramework: string,
+        public jhiPrefix: string
+    ) {}
 }

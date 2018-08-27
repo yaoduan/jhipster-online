@@ -18,6 +18,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+
 import { JdlService } from './jdl.service';
 
 @Component({
@@ -27,13 +28,16 @@ import { JdlService } from './jdl.service';
 export class JdlOutputDialogComponent implements OnInit {
     logs = '';
 
-    applyJdlId: String;
-
-    gitHubOrganization: String;
-
-    gitHubProject: String;
+    applyJdlId: string;
 
     displayBranchUrl = false;
+
+    selectedGitProvider: string;
+    selectedGitCompany: string;
+    selectedGitRepository: string;
+
+    gitlabHost: string;
+    githubHost: string;
 
     constructor(private activeModal: NgbActiveModal, private jdlService: JdlService) {}
 

@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 import { Component, OnInit } from '@angular/core';
-import { CiCdService } from './ci-cd.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+import { GitConfigurationModel, GitConfigurationService } from 'app/core';
 import { CiCdOutputDialogComponent } from './ci-cd.output.component';
-import { GithubService } from '../github/github.service';
-import { GithubOrganizationModel } from '../generator/github.organization.model';
+import { CiCdService } from './ci-cd.service';
 
 @Component({
     selector: 'jhi-generator',
@@ -33,72 +33,44 @@ export class CiCdComponent implements OnInit {
 
     ciCdId = '';
 
-    gitHubConfigured = true;
-
-    organizations: GithubOrganizationModel[];
-
-    gitHubOrganization: String;
-
-    projects: String[];
-
-    gitHubProject: String;
-
-    baseName: String;
-
-    githubRefresh = false;
-
     ciCdTool = 'travis';
 
-    constructor(private modalService: NgbModal, private githubService: GithubService, private ciCdService: CiCdService) {}
+    selectedGitProvider: string;
+    selectedGitCompany: string;
+    selectedGitRepository: string;
+
+    isGitProviderComponentValid = false;
+
+    githubConfigured = false;
+    gitlabConfigured = false;
+
+    gitConfig: GitConfigurationModel;
+
+    constructor(
+        private modalService: NgbModal,
+        private gitConfigurationService: GitConfigurationService,
+        private ciCdService: CiCdService
+    ) {}
 
     ngOnInit() {
-        this.updateGitHubOrganizations();
+        this.gitConfig = this.gitConfigurationService.gitConfig;
+        this.gitlabConfigured = this.gitConfig.gitlabConfigured;
+        this.githubConfigured = this.gitConfig.githubConfigured;
+        this.gitConfigurationService.sharedData.subscribe(gitConfig => {
+            this.gitlabConfigured = gitConfig.gitlabConfigured;
+            this.githubConfigured = gitConfig.githubConfigured;
+        });
     }
 
-    refreshGithub() {
-        this.githubRefresh = true;
-        this.githubService.refreshGithub().subscribe(
-            () => {
-                this.updateGitHubOrganizations();
-            },
-            () => {
-                this.githubRefresh = false;
-            }
-        );
-    }
-
-    updateGitHubOrganizations() {
-        this.githubRefresh = false;
-        this.githubService.getOrganizations().subscribe(
-            orgs => {
-                this.organizations = orgs;
-                this.gitHubOrganization = orgs[0].name;
-                this.gitHubConfigured = true;
-                this.updateGitHubProjects(this.gitHubOrganization);
-            },
-            () => {
-                this.gitHubConfigured = false;
-                this.githubRefresh = false;
-            }
-        );
-    }
-
-    updateGitHubProjects(organizationName: String) {
-        this.githubService.getProjects(organizationName).subscribe(
-            projects => {
-                this.projects = projects;
-                this.gitHubProject = projects[0];
-                this.gitHubConfigured = true;
-            },
-            () => {
-                this.gitHubConfigured = false;
-                this.githubRefresh = false;
-            }
-        );
+    updateSharedData(data: any) {
+        this.selectedGitProvider = data.selectedGitProvider;
+        this.selectedGitCompany = data.selectedGitCompany;
+        this.selectedGitRepository = data.selectedGitRepository;
+        this.isGitProviderComponentValid = data.isValid;
     }
 
     applyCiCd() {
-        this.ciCdService.addCiCd(this.gitHubOrganization, this.gitHubProject, this.ciCdTool).subscribe(
+        this.ciCdService.addCiCd(this.selectedGitProvider, this.selectedGitCompany, this.selectedGitRepository, this.ciCdTool).subscribe(
             res => {
                 this.openOutputModal(res);
                 this.submitted = false;
@@ -107,12 +79,19 @@ export class CiCdComponent implements OnInit {
         );
     }
 
-    openOutputModal(ciCdId: String) {
+    openOutputModal(ciCdId: string) {
         const modalRef = this.modalService.open(CiCdOutputDialogComponent, { size: 'lg', backdrop: 'static' }).componentInstance;
 
         modalRef.ciCdId = ciCdId;
         modalRef.ciCdTool = this.ciCdTool;
-        modalRef.gitHubOrganization = this.gitHubOrganization;
-        modalRef.gitHubProject = this.gitHubProject;
+        modalRef.gitlabHost = this.gitConfig.gitlabHost;
+        modalRef.githubHost = this.gitConfig.githubHost;
+        modalRef.selectedGitProvider = this.selectedGitProvider;
+        modalRef.selectedGitCompany = this.selectedGitCompany;
+        modalRef.selectedGitRepository = this.selectedGitRepository;
+    }
+
+    isAtLeastOneGitProviderAvailableAndConfigured() {
+        return (this.gitConfig.githubAvailable && this.githubConfigured) || (this.gitConfig.githubAvailable && this.gitlabConfigured);
     }
 }

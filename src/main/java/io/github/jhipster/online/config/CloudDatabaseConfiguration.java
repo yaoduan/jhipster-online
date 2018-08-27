@@ -16,16 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.github.jhipster.online.config;
 
-import io.github.jhipster.config.JHipsterConstants;
+import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.config.java.AbstractCloudConfig;
 import org.springframework.context.annotation.*;
 
-import javax.sql.DataSource;
+import io.github.jhipster.config.JHipsterConstants;
 
 @Configuration
 @Profile(JHipsterConstants.SPRING_PROFILE_CLOUD)

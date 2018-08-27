@@ -20,10 +20,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 
+import { createRequestOption } from 'app/shared';
 import { JdlMetadata } from './jdl-metadata.model';
-import { createRequestOption } from '../../shared';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class JdlMetadataService {
     private metadataUrl = 'api/jdl-metadata';
 
@@ -37,7 +37,7 @@ export class JdlMetadataService {
     }
 
     find(id: number): Observable<JdlMetadata> {
-        return this.http.get<JdlMetadata>(`${this.metadataUrl}/${id}`).map((res: JdlMetadata) => res);
+        return this.http.get<JdlMetadata>(`${this.metadataUrl}/${id}`);
     }
 
     query(req?: any): Observable<JdlMetadata[]> {

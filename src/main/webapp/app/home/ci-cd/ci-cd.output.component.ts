@@ -18,6 +18,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+
 import { CiCdService } from './ci-cd.service';
 
 @Component({
@@ -27,15 +28,17 @@ import { CiCdService } from './ci-cd.service';
 export class CiCdOutputDialogComponent implements OnInit {
     logs = '';
 
-    ciCdId: String;
-
-    ciCdTool: String;
-
-    gitHubOrganization: String;
-
-    gitHubProject: String;
+    ciCdId: string;
+    ciCdTool: string;
 
     displayApplicationUrl = false;
+
+    selectedGitProvider: string;
+    selectedGitCompany: string;
+    selectedGitRepository: string;
+
+    gitlabHost: string;
+    githubHost: string;
 
     constructor(private activeModal: NgbActiveModal, private ciCdService: CiCdService) {}
 

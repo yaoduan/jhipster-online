@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+
 import { ProdConfig } from './blocks/config/prod.config';
 import { JhonlineAppModule } from './app.module';
 
@@ -27,6 +28,6 @@ if (module['hot']) {
 }
 
 platformBrowserDynamic()
-    .bootstrapModule(JhonlineAppModule)
-    .then(success => console.log(`Application started`))
+    .bootstrapModule(JhonlineAppModule, { preserveWhitespaces: true })
+    .then(() => console.log(`Application started`))
     .catch(err => console.error(err));
